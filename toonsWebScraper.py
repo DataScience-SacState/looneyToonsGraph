@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 
-from bs4 import BeautifulSoup
 import requests
 import re
 import lxml
 import json
+from bs4 import BeautifulSoup
+
+#Globally defined data structures/variables
+wikipediaPages =["https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1929-39)",
+               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1940-49)",
+               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1950-59)",
+               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1960-69)",
+               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1970-present_and_miscellaneous)"
+]
+
 
 def parseOneEpisodeSoup(episodeSoup):
   episode = {}
@@ -39,28 +48,26 @@ def parseOneWikipediaPageSoup(wikipediaSoup):
       pageList.extend(parseOneYearSoup(yearSoup))
   return(pageList)
 
-def pythonJsonWriter(jsonIn):
-  with open('data.json', 'w') as outfile:
+def pythonJsonWriter(jsonIn,count):
+  with open('data' + str(count) + '.json', 'w') as outfile:
     json.dump(jsonIn, outfile)
 
+def loopLoony(listIn):
+  everyEpisode = []
+  count = 0
+  for links in listIn:
+    a = requests.get(links).text
+    wikiSoup = BeautifulSoup(a,"lxml")
+    '''
+    everyEpisode.extend(parseOneWikipediaPageSoup(wikiSoup))
+    pythonJsonWriter(everyEpisode)
+    '''
+    parsedTable = parseOneWikipediaPageSoup(wikiSoup)
+    pythonJsonWriter(parsedTable,count)
+    count+=1
 
-wikipediaPages =["https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1929-39)",
-               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1940-49)",
-               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1950-59)",
-               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1960-69)",
-               "https://en.wikipedia.org/wiki/Looney_Tunes_and_Merrie_Melodies_filmography_(1970-present_and_miscellaneous)"
-]
+def main():
+  loopLoony(wikipediaPages) 
 
-everyEpisode = []
-
-'''
-with urllib.request.urlopen(wikipediaPages[0]) as url:
-  a = url.read
-'''
-a = requests.get(wikipediaPages[0]).text
-wikiSoup = BeautifulSoup(a,"lxml")
-everyEpisode.extend(parseOneWikipediaPageSoup(wikiSoup))
-
-pythonJsonWriter(everyEpisode)
-
-
+if __name__ == "__main__":
+  main()
