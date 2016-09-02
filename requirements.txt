@@ -1,0 +1,11 @@
+BeautifulSoup==3.2.1
+beautifulsoup4==4.5.1
+bs4==0.0.1
+get==0.0.0
+lxml==3.6.4
+post==0.0.0
+public==0.0.0
+query-string==0.0.0
+request==0.0.0
+requests==2.11.1
+setupfiles==0.0.13
