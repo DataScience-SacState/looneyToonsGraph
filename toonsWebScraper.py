@@ -58,10 +58,6 @@ def loopLoony(listIn):
   for links in listIn:
     a = requests.get(links).text
     wikiSoup = BeautifulSoup(a,"lxml")
-    '''
-    everyEpisode.extend(parseOneWikipediaPageSoup(wikiSoup))
-    pythonJsonWriter(everyEpisode)
-    '''
     parsedTable = parseOneWikipediaPageSoup(wikiSoup)
     pythonJsonWriter(parsedTable,count)
     count+=1
